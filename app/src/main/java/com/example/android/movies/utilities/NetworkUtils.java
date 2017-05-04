@@ -24,7 +24,7 @@ public class NetworkUtils {
     /*
     the key is on README file
      */
-    private static final String key = "81dc6fa2c40b96bf1af1c05526c9aa4b";
+    private static final String key = "";
     final static String PARAM_KEY = "api_key";
 
     final static String PARAM_SIZE = "w185";
