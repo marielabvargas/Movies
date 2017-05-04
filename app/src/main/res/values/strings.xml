@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Movies</string>
+    <string name="rating">Rating</string>
+    <string name="year">Year</string>
+    <string name="title_menu">Top rated</string>
+    <string name="error_message_display">An error has occurred. Please wait a second and try again</string>
+</resources>
