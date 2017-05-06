@@ -2,9 +2,11 @@ package com.example.android.movies.utilities;
 
 import android.content.Context;
 import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,29 +31,29 @@ public final class MoviesJsonUtils {
         JSONObject moviesJson = new JSONObject(moviesJsonStr);
 
         try {
-                JSONArray moviesArray = moviesJson.getJSONArray(OWM_RESULTS);
-                for (int i = 0; i < moviesArray.length(); i++) {
-                    String original_title;
-                    String poster_path;
-                    String overview;
-                    String vote_average;
-                    String release_date;
+            JSONArray moviesArray = moviesJson.getJSONArray(OWM_RESULTS);
+            for (int i = 0; i < moviesArray.length(); i++) {
+                String original_title;
+                String poster_path;
+                String overview;
+                String vote_average;
+                String release_date;
 
-                    JSONObject eachMovie = moviesArray.getJSONObject(i);
+                JSONObject eachMovie = moviesArray.getJSONObject(i);
 
-                    original_title = eachMovie.getString(OWM_ORIGINAL_TITLE);
-                    poster_path = NetworkUtils.buildUrlImage(eachMovie.getString(OWM_POSTER_PATH)).toString();
-                    overview = eachMovie.getString(OWM_OVERVIEW);
-                    vote_average = eachMovie.getString(OWM_VOTE_AVERAGE);
-                    release_date = eachMovie.getString(OWM_RELEASE_DATE);
+                original_title = eachMovie.getString(OWM_ORIGINAL_TITLE);
+                poster_path = NetworkUtils.buildUrlImage(eachMovie.getString(OWM_POSTER_PATH)).toString();
+                overview = eachMovie.getString(OWM_OVERVIEW);
+                vote_average = eachMovie.getString(OWM_VOTE_AVERAGE);
+                release_date = eachMovie.getString(OWM_RELEASE_DATE);
 
-                    Movies thisMovie = new Movies(original_title, poster_path, overview, vote_average, release_date);
+                Movies thisMovie = new Movies(original_title, poster_path, overview, vote_average, release_date);
 
-                    moviesList.add(thisMovie);
-                }
-            }catch (JSONException e){
-                Log.e("NetworksUtils", "Problem parsing the movies JSON results", e);
+                moviesList.add(thisMovie);
             }
-        return moviesList;
+        } catch (JSONException e) {
+            Log.e("NetworksUtils", "Problem parsing movies JSON results", e);
         }
+        return moviesList;
+    }
 }

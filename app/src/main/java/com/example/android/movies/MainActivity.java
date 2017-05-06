@@ -2,9 +2,10 @@ package com.example.android.movies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -24,18 +25,13 @@ import java.util.List;
 
 import static com.example.android.movies.R.menu.sort;
 
-public class MainActivity extends AppCompatActivity
-        implements MovieAdapter.MovieAdapterOnClickHandler{
-
-
-    private MovieAdapter mMovieAdapter;
-    private RecyclerView mRecyclerView;
-
-    private Toast mToast;
-    private TextView mErrorMessageDisplay;
-    private ProgressBar mLoadingIndicator;
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     public String optionSelected = "popular";
+    private MovieAdapter mMovieAdapter;
+    private RecyclerView mRecyclerView;
+    private TextView mErrorMessageDisplay;
+    private ProgressBar mLoadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +41,13 @@ public class MainActivity extends AppCompatActivity
         mRecyclerView = (RecyclerView) findViewById(R.id.rv_movies);
         mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error_message_display);
 
-        GridLayoutManager layoutManager;
-        layoutManager = new GridLayoutManager(this, 2);
-        mRecyclerView.setLayoutManager(layoutManager);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        }
+        else{
+            mRecyclerView.setLayoutManager(new GridLayoutManager(this, 4));
+        }
+
         mRecyclerView.setHasFixedSize(true);
 
         mMovieAdapter = new MovieAdapter(this);
@@ -64,31 +64,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onClick(Movies movieClicked){
+    public void onClick(Movies movieClicked) {
         Context context = this;
         Class destinationClass = DetailActivity.class;
         Intent intentToStartDetailActivity = new Intent(context, destinationClass);
         intentToStartDetailActivity.putExtra("detailForMovie", movieClicked);
         startActivity(intentToStartDetailActivity);
     }
-/*
-    @Override
-    public void onClick(String oneMovie) {
-        Context context = this;
-        //Class destinationClass = DetailActivity.class;
-        //Intent intentToStartDetailActivity = new Intent(context, destinationClass);
 
-        //intentToStartDetailActivity.putExtra(Intent.EXTRA_TEXT, weatherForDay);
-        //startActivity(intentToStartDetailActivity);
-        if (mToast != null) {
-            mToast.cancel();
-        }
-        String toastMessage = "Item # clicked.";
-        mToast = Toast.makeText(this, toastMessage, Toast.LENGTH_LONG);
-
-        mToast.show();
-    }
-*/
     private void showMoviesDataView() {
         mErrorMessageDisplay.setVisibility(View.INVISIBLE);
         mRecyclerView.setVisibility(View.VISIBLE);
@@ -97,6 +80,30 @@ public class MainActivity extends AppCompatActivity
     private void showErrorMessage() {
         mRecyclerView.setVisibility(View.INVISIBLE);
         mErrorMessageDisplay.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(sort, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_search) {
+            if (optionSelected == "popular") {
+                optionSelected = "top_rated";
+                item.setTitle("Popular");
+            } else {
+                optionSelected = "popular";
+                item.setTitle("Top rated");
+            }
+            loadMoviesData();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, List<Movies>> {
@@ -134,29 +141,5 @@ public class MainActivity extends AppCompatActivity
                 showErrorMessage();
             }
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(sort, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_search) {
-            if (optionSelected == "popular"){
-                optionSelected = "top_rated";
-                item.setTitle("Popular");
-            }else{
-                optionSelected = "popular";
-                item.setTitle("Top rated");
-            }
-            loadMoviesData();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
